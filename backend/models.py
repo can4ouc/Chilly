@@ -41,22 +41,6 @@ class User(Base):
     interests = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
 
-    def to_json(self):
-        return {
-            'id': self.id,
-            'join_date': self.join_date,
-            'username': self.username,
-            'password': self.password,
-            'email': self.email,
-            'first_name': self.first_name,
-            'avatar': self.avatar,
-            'gender': self.gender,
-            'birthdate': self.birthdate,
-            'bio': self.bio,
-            'interests': self.interests,
-            'location': self.location,
-        }
-
 
 class Event(Base):
     __tablename__ = 'events'
@@ -73,18 +57,3 @@ class Event(Base):
     tags = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     image = Column(ARRAY(String), default=[], nullable=False)
     location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
-
-    def to_json(self):
-        return {
-            'id': self.id,
-            'created_date': self.created_date,
-            'title': self.title,
-            'date': self.date,
-            'duration': self.duration,
-            'place': self.place,
-            'description': self.description,
-            'creator_id': self.creator_id,
-            'participants': self.participants,
-            'tags': self.tags,
-            'image': self.image,
-        }

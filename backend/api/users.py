@@ -16,7 +16,7 @@ verification_codes = {}
 
 
 @users_router.post('/signup', response_model=UserSchema, status_code=201)
-async def create_user_signup(user: UserIn, db_session: Session = Depends(db.generate_session)):
+def create_user_signup(user: UserIn, db_session: Session = Depends(db.generate_session)):
     db_user = db_session.query(User).filter(User.username == user.username).first()
     if db_user:
         raise HTTPException(
@@ -42,8 +42,8 @@ async def create_user_signup(user: UserIn, db_session: Session = Depends(db.gene
 
 
 @users_router.post('/users/signup/enrich', response_model=UserSchema, status_code=201)
-async def add_user_info(user: UserInfo, db_session: Session = Depends(db.generate_session)):
-    db_user: User = db_session.query(User).filter(User.id == user.user_id).first()
+def add_user_info(user: UserInfo, db_session: Session = Depends(db.generate_session)):
+    db_user = db_session.query(User).filter(User.id == user.user_id).first()
     if not db_user:
         raise HTTPException(
             status_code=404,
@@ -60,29 +60,31 @@ async def add_user_info(user: UserInfo, db_session: Session = Depends(db.generat
 
 
 @users_router.post('/users/login', response_model=UserSchema)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(db.generate_session)) -> any:
+def user_login(
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        db_session: Session = Depends(db.generate_session)
+) -> User:
     user = authenticate(username=form_data.username, password=form_data.password, db_session=db_session)
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username of password")
+    if user:
+        return user
 
-    return user
+    raise HTTPException(status_code=400, detail="Incorrect username of password")
 
 
 @users_router.get("/users/<int:user_id>", response_model=UserSchema, status_code=200)
-async def get_user(user_id: int, db_session: Session = Depends(db.generate_session)):
+def get_user_by_id(user_id: int, db_session: Session = Depends(db.generate_session)):
     user = db_session.query(User).filter(User.id == user_id).first()
     if user:
-        print(user)
-        return user.to_json()
+        return user
 
     raise HTTPException(
         status_code=404,
-        detail='Event with requested id not found'
+        detail='User with requested id not found'
     )
 
 
 @users_router.get("/users/get_feed/<int:user_id>", response_model=list[EventSchema], status_code=200)
-async def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_session)):
+def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_session)):
     user = db_session.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(
@@ -109,7 +111,7 @@ def calculate_event_user_match_score(user: User, event: Event) -> int:
 
 
 @users_router.get("/users/search/<str:query>", response_model=list[UserSchema], status_code=200)
-async def get_users_search_query(query: str, user_id: int, db_session: Session = Depends(db.generate_session)):
+def get_users_search_query(query: str, user_id: int, db_session: Session = Depends(db.generate_session)):
     users_list = db_session.query(User).filter(
         User.id != user_id,
     ).all()
@@ -130,11 +132,6 @@ def calculate_user_user_match_score(query: str, user: User) -> int:
     bio_match = fuzz.partial_ratio(query, user.bio) / 100
     interests_match = fuzz.partial_ratio(query, ' '.join(user.interests)) / 100
     location_match = fuzz.partial_ratio(query, user.location) / 100
-    print(username_match * 0.4 +
-        first_name_match * 0.25 +
-        bio_match * 0.2 +
-        interests_match * 0.1 +
-        location_match * 0.05)
     return (
         username_match * 0.4 +
         first_name_match * 0.25 +

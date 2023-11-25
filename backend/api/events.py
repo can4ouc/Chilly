@@ -18,7 +18,7 @@ verification_codes = {}
 
 
 @events_router.post('/events/create', response_model=EventSchema, status_code=201)
-async def create_event(creator_id: int, event: EventInput, db_session: Session = Depends(db.generate_session)):
+def create_event(creator_id: int, event: EventInput, db_session: Session = Depends(db.generate_session)):
     db_event = Event(
         title=event.title,
         created_date=datetime.utcnow(),
@@ -38,10 +38,10 @@ async def create_event(creator_id: int, event: EventInput, db_session: Session =
 
 
 @events_router.get("/events/<int:event_id>", response_model=EventSchema, status_code=200)
-async def get_event(event_id: int, db_session: Session = Depends(db.generate_session)):
+def get_event_by_id(event_id: int, db_session: Session = Depends(db.generate_session)):
     event = db_session.query(Event).filter(Event.id == event_id).first()
     if event:
-        return event.to_json()
+        return event
 
     raise HTTPException(
         status_code=404,
@@ -49,11 +49,11 @@ async def get_event(event_id: int, db_session: Session = Depends(db.generate_ses
     )
 
 
-@events_router.post("/events/<int:event_id>/participate", response_model=EventSchema, status_code=200)
-async def get_event(event_id: int, user_id: int, db_session: Session = Depends(db.generate_session)):
+@events_router.post("/events/<int:event_id>/attend", response_model=EventSchema, status_code=200)
+def attend_event(event_id: int, user_id: int, db_session: Session = Depends(db.generate_session)):
     db_event = db_session.query(Event).filter_by(id=event_id).first()
 
-    new_participants = [id for id in db_event.participants]
+    new_participants = [participant_id for participant_id in db_event.participants]
     if user_id in new_participants:
         raise HTTPException(
             status_code=404,
@@ -72,7 +72,7 @@ async def get_event(event_id: int, user_id: int, db_session: Session = Depends(d
 
 
 @events_router.get("/events/search/<str:query>", response_model=list[EventSchema], status_code=200)
-async def get_events_search_query(query: str, user_id, db_session: Session = Depends(db.generate_session)) -> list[Event]:
+def get_events_search_query(query: str, user_id, db_session: Session = Depends(db.generate_session)) -> list[Event]:
     # we need to retrieve user_id from current user
     events_list = db_session.query(Event).filter(
         Event.creator_id != user_id,
