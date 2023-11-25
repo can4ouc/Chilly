@@ -16,6 +16,18 @@ class Tags(str, enum.Enum):
     DANCE = 'dance'
     SPORT = 'sport'
     FOOD = 'food'
+    CONFERENCE = 'conference'
+    OUTDOOR = 'outdoor'
+    RUNNING = 'running'
+    OBSERVANCE = 'observance'
+    BUSINESS = 'business'
+    MUSIC = 'music'
+    CONCERT = 'concert'
+    HOLIDAY_NATIONAL = 'holiday-national'
+    HOLIDAY = 'holiday'
+    OBSERVANCE_SEASON = 'observance-season'
+    SOCCER = 'soccer'
+
 
 
 class Location(str, enum.Enum):

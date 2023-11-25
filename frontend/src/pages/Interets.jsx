@@ -40,7 +40,7 @@ function Interets() {
                     {
                        Object.keys(interested).map((itm, ind) => (
                         interested[itm]?
-                        <div className='w-fit p-1 rounded-2xl bg-gray-300'
+                        <div className='w-fit p-2 rounded-2xl bg-gray-300'
                              key={ind}
                         >
                             {itm}
