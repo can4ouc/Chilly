@@ -97,11 +97,11 @@ async def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_
     events_dict = dict()
     for event in events_list:
         events_dict[event.id] = event
-        match_scores[event.id] = calculate_match_score(user, event)
+        match_scores[event.id] = calculate_user_match_score(user, event)
     # sort by match_score
     feed = dict(sorted(match_scores.items(), key=lambda item: item[1]))
     return [events_dict[i] for i in feed.keys()]
 
 
-def calculate_match_score(user: User, event: Event) -> int:
+def calculate_user_match_score(user: User, event: Event) -> int:
     return len(set(user.interests).intersection(set(event.tags))) + (event.location == user.location)
