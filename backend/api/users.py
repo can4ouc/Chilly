@@ -14,11 +14,6 @@ users_router = fastapi.APIRouter()
 verification_codes = {}
 
 
-@users_router.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 @users_router.post('/signup', response_model=UserSchema, status_code=201)
 async def create_user_signup(user: UserIn, db_session: Session = Depends(db.generate_session)):
     db_user = db_session.query(User).filter(User.username == user.username).first()

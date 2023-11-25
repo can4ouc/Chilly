@@ -16,3 +16,8 @@ app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
 app.include_router(users_router)
 app.include_router(events_router)
 app.include_router(tags_router)
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
