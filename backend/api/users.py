@@ -3,7 +3,7 @@ from fastapi import HTTPException, Depends
 from backend import db
 from sqlalchemy.orm import Session
 
-from backend.api.schema import UserIn, UserSchema
+from backend.api.schema import UserIn, UserSchema, UserInfo
 from backend.core.auth import get_password_hash
 from backend.models import User
 
@@ -40,3 +40,22 @@ async def create_user_signup(user: UserIn, db_session: Session = Depends(db.gene
     db_session.commit()
     db_session.refresh(db_user)
     return db_user
+
+
+@users_router.post('/signup/enrich', response_model=UserSchema, status_code=201)
+async def create_user_signup(user: UserInfo, db_session: Session = Depends(db.generate_session)):
+    db_user: User = db_session.query(User).filter(User.id == user.user_id).first()
+    if not db_user:
+        raise HTTPException(
+            status_code=404,
+            detail="Such user doesn't exist"
+        )
+
+    db_user.interests = user.interests
+    db_user.location = user.location
+
+    db_session.add(db_user)
+    db_session.commit()
+    db_session.refresh(db_user)
+    return db_user
+

@@ -21,6 +21,13 @@ class Tags(str, enum.Enum):
     FOOD = 'food'
 
 
+class Location(str, enum.Enum):
+    Nicosia = 'Nicosia'
+    Limassol = 'Limassol'
+    Larnaca = 'Larnaca'
+    Pafos = 'Pafos'
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -35,6 +42,7 @@ class User(Base):
     birthdate = Column(Date, nullable=True)
     bio = Column(String(length=4096), nullable=True)
     interests = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
+    location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
 
 
 class Event(Base):

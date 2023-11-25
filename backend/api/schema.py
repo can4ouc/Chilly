@@ -23,7 +23,12 @@ class UserIn(BaseModel):
     email: EmailStr
     username: str
     password: str
-    join_date: Optional[date]
+
+
+class UserInfo(BaseModel):
+    user_id: int
+    interests: Optional[Set[models.Tags]] = None
+    location: str
 
 
 class UserSchema(BaseModel):
