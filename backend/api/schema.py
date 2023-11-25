@@ -28,7 +28,7 @@ class UserIn(BaseModel):
 class UserInfo(BaseModel):
     user_id: int
     interests: Optional[Set[models.Tags]] = None
-    location: str
+    location: models.Location
 
 
 class UserSchema(BaseModel):

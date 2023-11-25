@@ -59,6 +59,7 @@ class Event(Base):
     participants = Column(ARRAY(Integer), default=[], nullable=False)
     tags = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     image = Column(ARRAY(String), default=[], nullable=False)
+    location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
 
     def to_json(self):
         return {
