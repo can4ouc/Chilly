@@ -72,7 +72,7 @@ async def get_event(event_id: int, user_id: int, db_session: Session = Depends(d
 
 
 @events_router.get("/events/search/<str:query>", response_model=list[EventSchema], status_code=200)
-async def get_event(query: str, user_id, db_session: Session = Depends(db.generate_session)) -> list[Event]:
+async def get_events_search_query(query: str, user_id, db_session: Session = Depends(db.generate_session)) -> list[Event]:
     # we need to retrieve user_id from current user
     events_list = db_session.query(Event).filter(
         Event.creator_id != user_id,
@@ -82,15 +82,15 @@ async def get_event(query: str, user_id, db_session: Session = Depends(db.genera
     events_dict = dict()
     for event in events_list:
         events_dict[event.id] = event
-        match_scores[event.id] = calculate_query_match_score(query, event)
+        match_scores[event.id] = calculate_event_query_match_score(query, event)
     # sort by match_score
     feed = dict(sorted(match_scores.items(), key=lambda item: item[1]))
     return [events_dict[i] for i in feed.keys()]
 
 
-def calculate_query_match_score(query: str, event: Event) -> float:
+def calculate_event_query_match_score(query: str, event: Event) -> float:
     title_match = fuzz.partial_ratio(query, event.title)/100
     description_match = fuzz.partial_ratio(query, event.description)/100
     tags_match = fuzz.partial_ratio(query, ' '.join(event.tags))/100
     location_match = fuzz.partial_ratio(query, event.location)/100
-    return title_match * 0.5 + description_match * 0.3 + tags_match * 0.12 + location_match * 0.8
+    return title_match * 0.5 + description_match * 0.3 + tags_match * 0.12 + location_match * 0.08

@@ -1,6 +1,7 @@
 import fastapi
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
+from fuzzywuzzy import fuzz
 
 from backend import db
 from sqlalchemy.orm import Session
@@ -97,11 +98,42 @@ async def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_
     events_dict = dict()
     for event in events_list:
         events_dict[event.id] = event
-        match_scores[event.id] = calculate_user_match_score(user, event)
+        match_scores[event.id] = calculate_event_user_match_score(user, event)
     # sort by match_score
     feed = dict(sorted(match_scores.items(), key=lambda item: item[1]))
     return [events_dict[i] for i in feed.keys()]
 
 
-def calculate_user_match_score(user: User, event: Event) -> int:
+def calculate_event_user_match_score(user: User, event: Event) -> int:
     return len(set(user.interests).intersection(set(event.tags))) + (event.location == user.location)
+
+
+@users_router.get("/users/search/<str:query>", response_model=list[EventSchema], status_code=200)
+async def get_users_search_query(query: str, user_id: int, db_session: Session = Depends(db.generate_session)):
+    users_list = db_session.query(User).filter(
+        User.id != user_id,
+    ).all()
+
+    match_scores = dict()
+    events_dict = dict()
+    for user in users_list:
+        events_dict[user.id] = user
+        match_scores[user.id] = calculate_user_user_match_score(query, user)
+    # sort by match_score
+    feed = dict(sorted(match_scores.items(), key=lambda item: item[1]))
+    return [events_dict[i] for i in feed.keys()]
+
+
+def calculate_user_user_match_score(query: str, user: User) -> int:
+    username_match = fuzz.partial_ratio(query, user.username) / 100
+    first_name_match = fuzz.partial_ratio(query, user.first_name) / 100
+    bio_match = fuzz.partial_ratio(query, user.bio) / 100
+    interests_match = fuzz.partial_ratio(query, ' '.join(user.interests)) / 100
+    location_match = fuzz.partial_ratio(query, user.location) / 100
+    return (
+        username_match * 0.4 +
+        first_name_match * 0.25 +
+        bio_match * 0.2 +
+        interests_match * 0.1 +
+        location_match * 0.05
+    )
