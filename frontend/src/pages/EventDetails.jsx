@@ -132,6 +132,7 @@ function Interets() {
                         View
                         <FaRegMap style={{}} className='ml-3'/>
                     </div>
+                    {/* TODO: minimap <map></map>*/}
                 </div>
 
                 <Button onClick={onClick}>
