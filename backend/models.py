@@ -44,6 +44,22 @@ class User(Base):
     interests = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'join_date': self.join_date,
+            'username': self.username,
+            'password': self.password,
+            'email': self.email,
+            'first_name': self.first_name,
+            'avatar': self.avatar,
+            'gender': self.gender,
+            'birthdate': self.birthdate,
+            'bio': self.bio,
+            'interests': self.interests,
+            'location': self.location,
+        }
+
 
 class Event(Base):
     __tablename__ = 'events'

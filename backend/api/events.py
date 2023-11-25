@@ -39,7 +39,6 @@ async def create_event(creator_id: int, event: EventInput, db_session: Session =
 async def get_event(event_id: int, db_session: Session = Depends(db.generate_session)):
     event = db_session.query(Event).filter(Event.id == event_id).first()
     if event:
-        print(event)
         return event.to_json()
 
     raise HTTPException(
