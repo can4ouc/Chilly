@@ -65,7 +65,7 @@ class EventSchema(BaseModel):
     place: str
     description: str
     creator_id: int
-    participants: List[UserSchema]
+    participants: List[int]
     tags: Optional[Set[models.Tags]] = None
     image: List[str]
 
