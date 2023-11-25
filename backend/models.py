@@ -29,7 +29,7 @@ class User(Base):
     email = Column(String(length=4096), nullable=False)
     first_name = Column(String(length=4096), nullable=True)
     avatar = Column(String(length=4096), default='ava.jpg', nullable=False)
-    gender = Column(Enum(Gender), default=Gender.NON_BINARY, nullable=False)
+    gender = Column(Enum(Gender), default=Gender.MALE, nullable=False)
     birthdate = Column(Date, nullable=True)
     bio = Column(String(length=4096), nullable=True)
     interests = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
