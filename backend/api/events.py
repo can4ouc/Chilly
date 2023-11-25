@@ -84,7 +84,7 @@ async def get_events_search_query(query: str, user_id, db_session: Session = Dep
         events_dict[event.id] = event
         match_scores[event.id] = calculate_event_query_match_score(query, event)
     # sort by match_score
-    feed = dict(sorted(match_scores.items(), key=lambda item: item[1]))
+    feed = dict(sorted(match_scores.items(), key=lambda item: item[1], reverse=True))
     return [events_dict[i] for i in feed.keys()]
 
 
