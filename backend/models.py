@@ -1,8 +1,7 @@
 import datetime
 import enum
-from sqlite3 import Date
 
-from sqlalchemy import Column, Integer, String, ARRAY, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, ARRAY, DateTime, ForeignKey, Enum, Date
 
 from backend.db import Base
 
@@ -20,7 +19,7 @@ class Tags(str, enum.Enum):
 
 
 class User(Base):
-    tablename = "users"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     join_date = Column(Date, default=datetime.date.today())
@@ -36,7 +35,7 @@ class User(Base):
 
 
 class Event(Base):
-    tablename = 'events'
+    __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     created_date = Column(Date, default=datetime.date.today())

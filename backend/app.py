@@ -7,9 +7,11 @@ from backend import db
 from sqlalchemy.orm import Session
 
 from backend.api.schema import UserSchema
+from dotenv import load_dotenv
 
 
 app = FastAPI()
+load_dotenv()
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
 
 
