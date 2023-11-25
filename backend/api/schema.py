@@ -41,7 +41,17 @@ class UserSchema(BaseModel):
         orm_mode = True
 
 
-class EventInfo(BaseModel):
+class EventInput(BaseModel):
+    title: str
+    date: date
+    place: str
+    description: str
+    creator: UserSchema
+    tags: Optional[Set[models.Tags]] = None
+    image: List[str]
+
+
+class EventSchema(BaseModel):
     id: int
     title: str
     create_date: datetime
@@ -59,4 +69,4 @@ class EventInfo(BaseModel):
 
 
 class Events(BaseModel):
-    events: List[EventInfo]
+    events: List[EventSchema]
