@@ -1,11 +1,8 @@
 import datetime
 import enum
 
-from fastapi import Depends, HTTPException
 from sqlalchemy import Column, Integer, String, ARRAY, DateTime, ForeignKey, Enum, Date
-from sqlalchemy.orm import Session
 
-from backend import db
 from backend.db import Base
 
 

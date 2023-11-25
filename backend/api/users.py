@@ -1,10 +1,12 @@
 import fastapi
 from fastapi import HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+
 from backend import db
 from sqlalchemy.orm import Session
 
 from backend.api.schema import UserIn, UserSchema, UserInfo, EventSchema
-from backend.core.auth import get_password_hash
+from backend.core.auth import get_password_hash, authenticate
 from backend.models import User, Event
 
 users_router = fastapi.APIRouter()
@@ -43,7 +45,7 @@ async def create_user_signup(user: UserIn, db_session: Session = Depends(db.gene
     return db_user
 
 
-@users_router.post('/signup/enrich', response_model=UserSchema, status_code=201)
+@users_router.post('/users/signup/enrich', response_model=UserSchema, status_code=201)
 async def add_user_info(user: UserInfo, db_session: Session = Depends(db.generate_session)):
     db_user: User = db_session.query(User).filter(User.id == user.user_id).first()
     if not db_user:
@@ -59,6 +61,15 @@ async def add_user_info(user: UserInfo, db_session: Session = Depends(db.generat
     db_session.commit()
     db_session.refresh(db_user)
     return db_user
+
+
+@users_router.post('/users/login', response_model=UserSchema)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(db.generate_session)) -> any:
+    user = authenticate(username=form_data.username, password=form_data.password, db_session=db_session)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username of password")
+
+    return user
 
 
 @users_router.get("/users/<int:user_id>", response_model=UserSchema, status_code=200)
