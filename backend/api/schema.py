@@ -54,12 +54,12 @@ class EventInput(BaseModel):
 class EventSchema(BaseModel):
     id: int
     title: str
-    create_date: datetime
+    created_date: datetime
     date: date
     duration: Optional[int]
     place: str
     description: str
-    creator: UserSchema
+    creator_id: int
     participants: List[UserSchema]
     tags: Optional[Set[models.Tags]] = None
     image: List[str]

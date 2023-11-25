@@ -7,6 +7,7 @@ from fastapi_sqlalchemy import DBSessionMiddleware
 from backend import db
 from sqlalchemy.orm import Session
 
+from backend.api.events import events_router
 from backend.api.users import users_router
 from backend.core.auth import authenticate
 from backend.api.schema import UserSchema
@@ -17,6 +18,7 @@ load_dotenv()
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
 
 app.include_router(users_router)
+app.include_router(events_router)
 
 
 @app.post('/login', response_model=UserSchema)
