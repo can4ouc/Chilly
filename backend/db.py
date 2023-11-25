@@ -1,13 +1,16 @@
 import contextlib
+import os
 from typing import Iterator
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from dotenv import load_dotenv
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:eagle1994@localhost/sss"
 metadata = MetaData()
+load_dotenv()
 
+SQLALCHEMY_DATABASE_URL = os.environ['DATABASE_URI']
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=True, bind=engine)
 

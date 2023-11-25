@@ -1,22 +1,20 @@
 import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_sqlalchemy import DBSessionMiddleware
 from backend import db
 from sqlalchemy.orm import Session
 
+from backend.api.users import users_router
+from backend.core.auth import authenticate
 from backend.api.schema import UserSchema
-from dotenv import load_dotenv
 
 
 app = FastAPI()
 load_dotenv()
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
-
-
-from backend.api.users import users_router
-from backend.core.auth import authenticate
 
 app.include_router(users_router)
 
