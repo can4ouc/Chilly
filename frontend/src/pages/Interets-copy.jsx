@@ -4,8 +4,33 @@ import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom'
 import Location from './Location'
 
+
+const beach = require('../assets/tags/beach.png')
+const eco = require('../assets/tags/beach-cleaning.png')
+const birthday = require('../assets/tags/birthday.png')
+const club = require('../assets/tags/clubing.png')
+const corp = require('../assets/tags/corp.png')
+const dance = require('../assets/tags/dance.png')
+const event = require('../assets/tags/event.png')
+const festival = require('../assets/tags/festival.png')
+const hiking = require('../assets/tags/hiking.png')
+const meetup = require('../assets/tags/meetup.png')
+const openair = require('../assets/tags/open-air-party.png')
+const sports = require('../assets/tags/sports.png')
+
 const interests = [
-    'Football', 'Swimming', 'Party', 'Festival', 'Club', 'Meetup', 'Event', 'Dancing'
+    {key: 'Beach', value: beach},
+    {key: 'Eco', value: eco},
+    {key: 'Club', value: club},
+    {key: 'Dance', value: dance},
+    {key: 'Hiking', value: hiking},
+    {key: 'Festival', value: festival},
+    {key: 'Meetup', value: meetup},
+    {key: 'Birthday', value: birthday},
+    {key: 'Corp', value: corp},
+    {key: 'Event', value: event},
+    {key: 'Open Air', value: openair},
+    {key: 'Sports', value: sports},
 ]
 
 function Interets() {
@@ -64,22 +89,22 @@ function Interets() {
             </div>
 
 
-            <div className='grow overflow-y-auto grid gap-4 grid-cols-2'>
-
+            <div className='grow overflow-y-auto grid gap-4 grid-cols-4'>
                 {
-                    interests.map((itm, ind) =>(
-                        <button className={`border-4 rounded-2xl w-full h-[140px] overflow-hidden bg-gray-200 ${interested[itm]? 'border-indigo-400' : 'border-gray-100'}`}
-                                onClick={handleInterest(itm)}
-                                key={ind}
+                    interests.map( item =>(
+                        <button className={`border-4 rounded-2xl w-full h-[140px] overflow-hidden bg-gray-200 ${interested[item.key]? 'border-[#F82B99]-400 bg-[#F82B99]-300' : 'border-gray-100'}`}
+                                onClick={handleInterest(item.key)}
+                                key={item.key}
                         >
-                            {itm}
-
+                            <img src={item.value} style={{zIndex: '-5'}}/>
+                            <p style={{zIndex: '5', display: 'block', width: '100%'}}
+                               className='bg-white'>{item.key}</p>
                         </button>
                     ))
                 }
             </div>
 
-            <Button onClick={onInterestChoose}>
+            <Button onClick={onInterestChoose} style={{backgroundColor: '#F82B99'}}>
                 Next
             </Button>
         </div>
