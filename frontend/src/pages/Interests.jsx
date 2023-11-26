@@ -63,14 +63,10 @@ function Interests() {
   return (
     <Container>
         <div className='flex flex-col gap-2 p-4'>
-            <h1 className='text-2xl text-bold'>
-                Choose your interest
-            </h1>
+            <h1 className='text-2xl text-bold'>Pick your interests</h1>
 
             <div className='flex gap-2 w-full py-2 items-center'>
-                <p className='whitespace-nowrap'>
-                    You choosed:
-                </p>
+                <p className='whitespace-nowrap'>Selected:</p>
 
                 <div className='grow flex gap-2 overflow-x-auto p-2'>
                     {
@@ -94,18 +90,19 @@ function Interests() {
                 {
                     interests.map( item =>(
                         <button className={`tags border-4 rounded-2xl w-full h-[140px] overflow-hidden bg-gray-200 ${interested[item.key]? 'border-[#F82B99]-400 tag-active' : 'border-gray-100'}`}
+                                style={{position: 'relative'}}
                                 onClick={handleInterest(item.key)}
                                 key={item.key}
                         >
-                            <img src={item.value} className='w-full' style={{zIndex: '-5', backgroundSize: 'cover', backgroundPosition: 'center'}}/>
-                            <p style={{zIndex: '5', display: 'block', width: '100%', backgroundColor: '#F82B99', color: '#fff'}}
+                            <img src={item.value} className='w-full' style={{zIndex: '-5', backgroundSize: 'cover', backgroundPosition: 'center', height: '100%'}}/>
+                            <p style={{position: 'absolute', top: '70%', zIndex: '5', display: 'block', width: '100%', backgroundColor: '#F82B99', color: '#fff'}}
                                className='bg-white'>{item.key}</p>
                         </button>
                     ))
                 }
             </div>
 
-            <Button onClick={onInterestChoose} style={{backgroundColor: '#F82B99'}}>
+            <Button onClick={onInterestChoose} style={{backgroundColor: '#F82B99'}} className='tags-button'>
                 Next
             </Button>
         </div>
