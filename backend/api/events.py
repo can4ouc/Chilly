@@ -28,10 +28,10 @@ verification_codes = {}
 @events_router.post('/events/get_ai_info', response_model=dict, status_code=201)
 def create_event_step_one(input_info: EventInfoForAI) -> dict:
     response = dict()
-    response['tags'] = list(get_tags_by_event(input_info['title'], input_info['description']))
-    if not input_info['image']:
-        image = [generate_image_by_event(input_info['title'], input_info['description'])]
-        response['image'] = image
+    response['tags'] = list(get_tags_by_event(input_info.title, input_info.description))
+    if not input_info.image:
+        image = [generate_image_by_event(input_info.title, input_info.description)]
+        response.image = image
     return response
 
 
