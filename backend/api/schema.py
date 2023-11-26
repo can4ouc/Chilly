@@ -72,5 +72,11 @@ class EventSchema(BaseModel):
         orm_mode = True
 
 
+class EventInfoForAI(BaseModel):
+    title: str
+    description: str
+    image: List[str]
+
+
 class Events(BaseModel):
     events: List[EventSchema]

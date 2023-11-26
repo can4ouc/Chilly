@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 from backend import db
 from sqlalchemy.orm import Session
 
-from backend.api.schema import EventSchema, EventInput
+from backend.api.schema import EventSchema, EventInput, EventInfoForAI
 from backend.models import Event, Tags
 
 from fuzzywuzzy import fuzz
@@ -26,10 +26,10 @@ verification_codes = {}
 
 
 @events_router.post('/events/get_ai_info', response_model=dict, status_code=201)
-def create_event_step_one(input_info: dict) -> dict:
+def create_event_step_one(input_info: EventInfoForAI) -> dict:
     response = dict()
     response['tags'] = list(get_tags_by_event(input_info['title'], input_info['description']))
-    if 'image' not in input_info.keys():
+    if not input_info['image']:
         image = [generate_image_by_event(input_info['title'], input_info['description'])]
         response['image'] = image
     return response
