@@ -31,7 +31,7 @@ def create_event_step_one(input_info: EventInfoForAI) -> dict:
     response['tags'] = list(get_tags_by_event(input_info.title, input_info.description))
     if not input_info.image:
         image = [generate_image_by_event(input_info.title, input_info.description)]
-        response.image = image
+        response['image'] = image
     return response
 
 
