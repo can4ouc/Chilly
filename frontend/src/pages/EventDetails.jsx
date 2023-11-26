@@ -132,7 +132,10 @@ function Interets() {
                         View
                         <FaRegMap style={{}} className='ml-3'/>
                     </div>
+<<<<<<< Updated upstream
                     {/* TODO: minimap <map></map>*/}
+=======
+>>>>>>> Stashed changes
                 </div>
 
                 <Button onClick={onClick}>
