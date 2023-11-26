@@ -93,7 +93,7 @@ def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_sessio
         )
 
     events_list = db_session.query(Event).filter(
-        Event.creator_id != user_id,
+        Event.creator_id != user_id, Event.image != {}
     ).all()
     events_list = [event for event in events_list if user_id not in event.participants]
     match_scores = dict()
