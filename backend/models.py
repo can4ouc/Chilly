@@ -41,14 +41,14 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    join_date = Column(Date, default=datetime.date.today())
+    join_date = Column(DateTime, default=datetime.date.today())
     username = Column(String(length=4096), nullable=False)
     password = Column(String(length=4096), nullable=False)
     email = Column(String(length=4096), nullable=False)
     first_name = Column(String(length=4096), nullable=True)
     avatar = Column(String(length=4096), default='ava.jpg', nullable=False)
     gender = Column(Enum(Gender), default=Gender.MALE, nullable=False)
-    birthdate = Column(Date, nullable=True)
+    birthdate = Column(DateTime, nullable=True)
     bio = Column(String(length=4096), nullable=True)
     interests = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
@@ -58,7 +58,7 @@ class Event(Base):
     __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    created_date = Column(Date, default=datetime.date.today())
+    created_date = Column(DateTime, default=datetime.datetime.utcnow())
     title = Column(String(length=4096), nullable=False)
     date = Column(DateTime, nullable=False)
     duration = Column(Integer, nullable=True)

@@ -48,10 +48,9 @@ class UserSchema(BaseModel):
 
 class EventInput(BaseModel):
     title: str
-    date: date
+    date: datetime
     place: str
     description: str
-    creator: UserSchema
     tags: Optional[Set[models.Tags]] = None
     image: List[str]
 
@@ -60,7 +59,7 @@ class EventSchema(BaseModel):
     id: int
     title: str
     created_date: datetime
-    date: date
+    date: datetime
     duration: Optional[int]
     place: str
     description: str

@@ -1,3 +1,4 @@
+import ast
 import os
 import time
 from datetime import datetime
@@ -27,7 +28,7 @@ verification_codes = {}
 @events_router.post('/events/create', response_model=EventSchema, status_code=201)
 def create_event(creator_id: int, event: EventInput, db_session: Session = Depends(db.generate_session)):
     if not event.image:
-        event.image = [generate_image(event.title, event.description)]
+        event.image = [generate_image_by_event(event.title, event.description)]
     db_event = Event(
         title=event.title,
         created_date=datetime.utcnow(),
@@ -111,13 +112,14 @@ def get_events_search_ai(query: str, user_id, db_session: Session = Depends(db.g
     events_list = db_session.query(Event).filter(
         Event.creator_id != user_id,
     ).all()
+    events_list = [event for event in events_list if user_id not in event.participants]
+    query_tags = get_tags_by_search_query(query)
 
-    # events_list = [event for event in events_list if user_id not in event.participants]
     match_scores = dict()
     events_dict = dict()
     for event in events_list:
         events_dict[event.id] = event
-        match_scores[event.id] = calculate_event_query_match_score(query, event)
+        match_scores[event.id] = len(query_tags.intersection(set(event.tags)))
     # sort by match_score
     feed = dict(sorted(match_scores.items(), key=lambda item: item[1], reverse=True))
     return [events_dict[i] for i in feed.keys()]
@@ -143,7 +145,7 @@ def generate_image_by_event(title: str, description: str) -> str:
     return response.data[0].url
 
 
-def get_tags_by_event(title: str, description: str) -> str:
+def get_tags_by_event(title: str, description: str) -> set:
     tags = [tag.value for tag in list(Tags)]
 
     client = OpenAI(
@@ -191,12 +193,65 @@ def get_tags_by_event(title: str, description: str) -> str:
         thread_id=thread.id
     )
 
-    return messages.data[0].content[0].text.value
+    return ast.literal_eval(messages.data[0].content[0].text.value)
 
 
-if __name__ == '__main__':
-    print()
-    title = 'Freedom Candlemaker'
-    description = 'Freedom Candlemaker (Lefteris Moumtzis) is bringing his fiery new band from Greece to Sousami to perform his acclaimed new album, Beaming Light! The album was released in February 2019 on Inner Ear Records, with a premiere and a great review from famous UK online mag The 405. Many excellent reviews followed from Greek and international press. Τhe album was presented in Athens last April, and was met with amazing feedback from the Athenian audience.'
-    print(get_tags_by_description(title, description))
+def get_tags_by_search_query(query: str) -> set:
+    tags = [tag.value for tag in list(Tags)]
+
+    client = OpenAI(
+        api_key=OPENAI_API_KEY,
+        organization=OPENAI_API_ORGANIZATION,
+    )
+
+    assistant = client.beta.assistants.create(
+        name="Chilly AI search assistant",
+        instructions=(
+            "You're a personal assistant. "
+            "I'll give you search query of a person searching for events, "
+            "and you'll analyze it and generate relevant tags "
+            f"matching the tags from this list: {tags}. Give me result as a python set."),
+        model="gpt-3.5-turbo-1106"
+    )
+
+    thread = client.beta.threads.create()
+
+    content = (
+        f"Search query: {query}."
+    )
+
+    _message = client.beta.threads.messages.create(
+        thread_id=thread.id,
+        role="user",
+        content=content,
+    )
+
+    run = client.beta.threads.runs.create(
+        thread_id=thread.id,
+        assistant_id=assistant.id,
+    )
+
+    completed = False
+    while not completed:
+        time.sleep(2)
+        run = client.beta.threads.runs.retrieve(
+            thread_id=thread.id,
+            run_id=run.id
+        )
+        if run.completed_at:
+            completed = True
+
+    messages = client.beta.threads.messages.list(
+        thread_id=thread.id
+    )
+
+    return ast.literal_eval(messages.data[0].content[0].text.value)
+
+
+# if __name__ == '__main__':
+#     print()
+#     title = 'Freedom Candlemaker'
+#     description = 'Freedom Candlemaker (Lefteris Moumtzis) is bringing his fiery new band from Greece to Sousami to perform his acclaimed new album, Beaming Light! The album was released in February 2019 on Inner Ear Records, with a premiere and a great review from famous UK online mag The 405. Many excellent reviews followed from Greek and international press. Τhe album was presented in Athens last April, and was met with amazing feedback from the Athenian audience.'
+#     print(get_tags_by_event(title, description))
+#     print(get_tags_by_event(title, description).intersection({'music', 'football'}))
     # print(generate_image(title, description))
