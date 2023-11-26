@@ -28,7 +28,7 @@ class UserIn(BaseModel):
 class UserInfo(BaseModel):
     user_id: int
     interests: Optional[Set[models.Tags]] = None
-    location: str
+    location: models.Location
 
 
 class UserSchema(BaseModel):
@@ -65,7 +65,7 @@ class EventSchema(BaseModel):
     place: str
     description: str
     creator_id: int
-    participants: List[UserSchema]
+    participants: List[int]
     tags: Optional[Set[models.Tags]] = None
     image: List[str]
 

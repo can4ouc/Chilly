@@ -1,11 +1,8 @@
 import datetime
 import enum
 
-from fastapi import Depends, HTTPException
 from sqlalchemy import Column, Integer, String, ARRAY, DateTime, ForeignKey, Enum, Date
-from sqlalchemy.orm import Session
 
-from backend import db
 from backend.db import Base
 
 
@@ -19,6 +16,18 @@ class Tags(str, enum.Enum):
     DANCE = 'dance'
     SPORT = 'sport'
     FOOD = 'food'
+    CONFERENCE = 'conference'
+    OUTDOOR = 'outdoor'
+    RUNNING = 'running'
+    OBSERVANCE = 'observance'
+    BUSINESS = 'business'
+    MUSIC = 'music'
+    CONCERT = 'concert'
+    HOLIDAY_NATIONAL = 'holiday-national'
+    HOLIDAY = 'holiday'
+    OBSERVANCE_SEASON = 'observance-season'
+    SOCCER = 'soccer'
+
 
 
 class Location(str, enum.Enum):
@@ -59,18 +68,4 @@ class Event(Base):
     participants = Column(ARRAY(Integer), default=[], nullable=False)
     tags = Column(ARRAY(Enum(Tags)), default=[], nullable=False)
     image = Column(ARRAY(String), default=[], nullable=False)
-
-    def to_json(self):
-        return {
-            'id': self.id,
-            'created_date': self.created_date,
-            'title': self.title,
-            'date': self.date,
-            'duration': self.duration,
-            'place': self.place,
-            'description': self.description,
-            'creator_id': self.creator_id,
-            'participants': self.participants,
-            'tags': self.tags,
-            'image': self.image,
-        }
+    location = Column(Enum(Location), default=Location.Nicosia, nullable=True)
