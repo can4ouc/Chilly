@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 
 import fastapi
@@ -11,7 +12,7 @@ from backend import db
 from sqlalchemy.orm import Session
 
 from backend.api.schema import EventSchema, EventInput
-from backend.models import Event
+from backend.models import Event, Tags
 
 from fuzzywuzzy import fuzz
 
@@ -122,7 +123,7 @@ def get_events_search_ai(query: str, user_id, db_session: Session = Depends(db.g
     return [events_dict[i] for i in feed.keys()]
 
 
-def generate_image(title: str, description: str) -> str:
+def generate_image_by_event(title: str, description: str) -> str:
     client = OpenAI(
         api_key=OPENAI_API_KEY,
         organization=OPENAI_API_ORGANIZATION,
@@ -142,7 +143,60 @@ def generate_image(title: str, description: str) -> str:
     return response.data[0].url
 
 
+def get_tags_by_event(title: str, description: str) -> str:
+    tags = [tag.value for tag in list(Tags)]
+
+    client = OpenAI(
+        api_key=OPENAI_API_KEY,
+        organization=OPENAI_API_ORGANIZATION,
+    )
+
+    assistant = client.beta.assistants.create(
+        name="Chilly AI search assistant",
+        instructions=(
+            "You're a personal assistant. "
+            "I'll give you event title and description and you'll analyze it and generate relevant tags "
+            f"matching the tags from this list: {tags}. Give me result as a python set."),
+        model="gpt-3.5-turbo-1106"
+    )
+
+    thread = client.beta.threads.create()
+
+    content = (
+        f"Event title: {title}. Event description: {description}."
+    )
+
+    _message = client.beta.threads.messages.create(
+        thread_id=thread.id,
+        role="user",
+        content=content,
+    )
+
+    run = client.beta.threads.runs.create(
+        thread_id=thread.id,
+        assistant_id=assistant.id,
+    )
+
+    completed = False
+    while not completed:
+        time.sleep(2)
+        run = client.beta.threads.runs.retrieve(
+            thread_id=thread.id,
+            run_id=run.id
+        )
+        if run.completed_at:
+            completed = True
+
+    messages = client.beta.threads.messages.list(
+        thread_id=thread.id
+    )
+
+    return messages.data[0].content[0].text.value
+
+
 if __name__ == '__main__':
-    title = 'Grow your inner self to improve results - Physical Seminar - Greek'
-    description = ''
-    print(generate_image(title, description))
+    print()
+    title = 'Freedom Candlemaker'
+    description = 'Freedom Candlemaker (Lefteris Moumtzis) is bringing his fiery new band from Greece to Sousami to perform his acclaimed new album, Beaming Light! The album was released in February 2019 on Inner Ear Records, with a premiere and a great review from famous UK online mag The 405. Many excellent reviews followed from Greek and international press. Τhe album was presented in Athens last April, and was met with amazing feedback from the Athenian audience.'
+    print(get_tags_by_description(title, description))
+    # print(generate_image(title, description))
