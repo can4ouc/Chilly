@@ -1,22 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.tags {
-    border-width: 1px;
-    border-color: #F82B99;
-}
-
-.tags img {
-    opacity: 35%;
-}
-
-.tags img:hover, .tag-active, .tag-active img {
-    opacity: 100%;
-    border-width: 2px;
-}
-
-.tags-button {
-    border: 2px solid #F82B99;
-    background-color: #F82B99;
-}

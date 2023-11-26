@@ -6,19 +6,31 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
 import { TfiTime } from "react-icons/tfi";
 import { FaRegMap } from "react-icons/fa6";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../components/Container';
 import Button from '../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {findAllByLabelText} from "@testing-library/react";
-const bgPic = require('../assets/event-details-header-bg-pic.png');
+import useGetFeed from "../hooks/useGetFeed";
+//const bgPic = require('../assets/event-details-header-bg-pic.png');
 
-function Interets() {
+function EventDetails() {
     const navigate = useNavigate()
+
+    const {id} = useParams()
+
+    const {data: feed, isLoading} = useGetFeed()
+
+    const event = feed?.filter(
+        itm => itm.id == id
+    )?.[0]
+
 
     const onClick = () =>{
         navigate('/getticket')
     }
+
+    const url = 'https://static.wixstatic.com/media/99a273_0518a7fe70e749bab9a8d9d67bb620d0~mv2.jpg'
 
     const orangeColor = '#fc7310'
     const whiteColor = '#ffffff'
@@ -74,25 +86,29 @@ function Interets() {
 
     return (
         <Container>
-            <div className='flex flex-col gap-2 p-4'>
+            <div className=' w-full flex flex-col gap-2 '>
                 <div style={{position: 'relative', overflow: 'hidden', zIndex: '-1'}}>
                     <IoMdArrowRoundBack style={{ ...headerButtons, left: '15px'}}/>
                     <IoMdShare style={{ ...headerButtons, right: '15px'}}/>
+                    
+                    <div className='h-full w-full'>
+                        <img src={event?.image[0]} alt="" className='h-full w-full object-center img-fluid'
+                        />
 
-                    <img src={bgPic}
-                         className='h-full w-full object-center img-fluid'
-                    />
+                    </div>
                 </div>
 
                 <div style={{marginTop: '-50px', backgroundColor: '#ffffff', borderRadius: '20px'}} className='py-6 px-3'>
-                    <h1 style={{ ...h2Style, fontSize: '26px'}}>Event Title Name</h1>
+                    <h1 style={{ ...h2Style, fontSize: '26px'}}>
+                        {event?.title}
+                    </h1>
                     <span style={titleIconStyle}>
                         <FaLocationDot className='mr-2'/>
-                        <p style={pStyle}>Larnaca, Cyprus</p>
+                        <p style={pStyle}>{event?.place}</p>
                     </span>
                     <span style={titleIconStyle}>
                         <FaCalendarAlt className='mr-2'/>
-                        <p style={pStyle}>September 25th, 2023</p>
+                        <p style={pStyle}>{event?.date}</p>
                     </span>
                     <span style={titleIconStyle}>
                         <TfiTime className='mr-2'/>
@@ -114,7 +130,7 @@ function Interets() {
 
                 <div className='my-3 px-3'>
                     <h2 style={h2Style}>About event</h2>
-                    <p>Join us for the Lorem Ipsum Conference 2023, where innovators, thought leaders, and enthusiasts gather to explore the limitless possibilities of lorem ipsum. Immerse yourself in a world of placeholder text, where lorem ipsum becomes a canvas for creativity and inspiration.</p>
+                    <p>{event?.description}</p>
                 </div>
 
                 <div className='my-5 px-3'>
@@ -135,13 +151,15 @@ function Interets() {
                     {/* TODO: minimap <map></map>*/}
                 </div>
 
-                <Button onClick={onClick}>
-                    Get ticket
-                </Button>
+                <div className="w-full p-4">
+                    <Button onClick={onClick} className='w-full'>
+                        Get ticket
+                    </Button>
+                </div>
             </div>
 
         </Container>
     )
 }
 
-export default Interets
+export default EventDetails

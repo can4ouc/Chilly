@@ -5,6 +5,8 @@ import images from '../assets/images';
 import Container from '../components/Container';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import Logo from '../assets/chilly-logo.png';
+
 
 const StartPage = () => {
 
@@ -44,11 +46,14 @@ const StartPage = () => {
                 </Carousel>
             </div>
 
-            <div className='absolute bottom-0 w-full h-[45%] 
+            <div className='absolute bottom-0 w-full h-[55%] 
                             rounded-t-2xl bg-slate-50 p-4 gap-2 flex flex-col'
             >
+                <img src={Logo} alt="logo" 
+                     className='w-[150px] h-[150px] object-cover mx-auto'
+                />
 
-                <h1 className='text-2xl text-center mb-8 text-bold'>
+                <h1 className='text-2xl text-center mb-8 text-slate-400'>
                     Welcome to Chilly
                 </h1>
                 <Button onClick={onClick('/login')}>
