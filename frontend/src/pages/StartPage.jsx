@@ -51,11 +51,11 @@ const StartPage = () => {
                 <h1 className='text-2xl text-center mb-8 text-bold'>
                     Welcome to Chilly
                 </h1>
-                <Button onclick={onClick('/login')}>
+                <Button onClick={onClick('/login')}>
                     Sign In
                 </Button>
 
-                <Button onclick={onClick('/signup')}
+                <Button onClick={onClick('/signup')}
                         variant='outlined'
                 >
                     Sign Up

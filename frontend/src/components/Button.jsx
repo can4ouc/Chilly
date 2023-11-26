@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Button({onclick, variant, className, children}) {
+function Button({onClick, variant, className, children}) {
 
     let klass = ''
 
@@ -10,7 +10,7 @@ function Button({onclick, variant, className, children}) {
 
   return (
     <button className={`p-2 border-indigo-500 border-2 rounded ${klass} ${className}`}
-                        onClick={onclick}
+                        onClick={onClick}
     >
         {children}
     </button>

@@ -29,7 +29,7 @@ function SignUp() {
                     type='password'
             />
             <Button className='w-full'
-                    onclick={onClick}
+                    onClick={onClick}
             >
                 Create account
             </Button>

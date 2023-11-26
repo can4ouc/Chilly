@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Container from '../components/Container'
 import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom'
+import Location from './Location'
 
 const interests = [
     'Football', 'Swimming', 'Party', 'Festival', 'Club', 'Meetup', 'Event', 'Dancing'
@@ -15,13 +16,23 @@ function Interets() {
 
     const navigate = useNavigate()
 
-    const onClick = () =>{
-        navigate('/location')
+    const [step, setStep] = useState('interests')
+
+    const onInterestChoose = () =>{
+        setStep('location')
     }
 
+    const onLocationChoose = (local) =>{
+        // console.log(local, '-->' )
+        navigate('/feed')
+    }
 
     const handleInterest = (val) => {
         return () => setInterested(curr => ({...curr, [val]: !curr[val]}))
+    }
+
+    if(step === 'location'){
+        return <Location onSubmit={onLocationChoose}/>
     }
 
   return (
@@ -68,7 +79,7 @@ function Interets() {
                 }
             </div>
 
-            <Button onClick={onClick}>
+            <Button onClick={onInterestChoose}>
                 Next
             </Button>
         </div>
