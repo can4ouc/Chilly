@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import SmallCardEvent from '../components/SmallCardEvent';
 import { useNavigate } from 'react-router-dom';
-//import Container from '../components/Container';
-
 
 const googleAPI = 'AIzaSyCQGJf6I859W9Bxf0iq-3gJ9lsslQL00lY'
 const containerStyle = {
