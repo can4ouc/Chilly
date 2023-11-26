@@ -83,7 +83,7 @@ def get_user_by_id(user_id: int, db_session: Session = Depends(db.generate_sessi
     )
 
 
-@users_router.get("/users/get_feed/<int:user_id>", response_model=list[EventSchema], status_code=200)
+@users_router.get("/users/get_feed", response_model=list[EventSchema], status_code=200)
 def get_user_feed(user_id: int, db_session: Session = Depends(db.generate_session)):
     user = db_session.query(User).filter(User.id == user_id).first()
     if not user:

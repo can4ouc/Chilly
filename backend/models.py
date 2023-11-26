@@ -27,6 +27,13 @@ class Tags(str, enum.Enum):
     HOLIDAY = 'holiday'
     OBSERVANCE_SEASON = 'observance-season'
     SOCCER = 'soccer'
+    AIRPORT = 'airport'
+    DELAY = 'delay'
+    MARATHON = 'marathon'
+    BASKETBALL = 'basketball'
+    SCIENCE = 'science'
+    TECHNOLOGY = 'technology'
+
 
 
 
